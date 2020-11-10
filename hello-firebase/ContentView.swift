@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
   @ObservedObject var viewModel = ViewModel()
+  let viewController = ViewController()
   var body: some View {
     VStack {
       Text("Asynchronous Message: " + viewModel.message)
@@ -16,7 +17,7 @@ struct ContentView: View {
         .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
           self.viewModel.fetchData()
         })
-      Text("Synchronous Message: " + viewModel.blockingFetchData())
+      Text("Synchronous Message: " + viewController.fetchData())
     }
   }
 }
