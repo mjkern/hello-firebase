@@ -6,21 +6,17 @@
 //
 
 import Foundation
-import FirebaseFirestore
+import Firebase
+import FirebaseDatabase
 
 class ViewModel: ObservableObject {
   @Published var message = "hard coded message"
-  
-  private var db = Firestore.firestore()
-  
+  var ref = Database.database().reference()
   func fetchData() {
-    db.collection("hello").addSnapshotListener({
-      (querySnapshot, error) in
-      guard let recievedMessage = querySnapshot?.documents else {
-        print("No message")
-        return
-      }
-      self.message = recievedMessage.first!.data().first!.key
-    })
+    ref.child("hello").observeSingleEvent(of: .value, with: { (snapshot) in
+      self.message = snapshot.value as! String
+    }) { (error) in
+      print(error.localizedDescription)
+    }
   }
 }

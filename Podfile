@@ -8,5 +8,5 @@ target 'hello-firebase' do
   # Pods for hello-firebase
   pod 'Firebase/Firestore'
   pod 'Firebase/Analytics'
-
+  pod 'Firebase/Database'
 end
