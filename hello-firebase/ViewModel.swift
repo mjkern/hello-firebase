@@ -28,8 +28,8 @@ class ViewModel: ObservableObject {
   }
   
   func blockingFetchData() -> String {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-      // https://stackoverflow.com/questions/38031137/how-to-program-a-delay-in-swift-3
+    let dg = DispatchGroup()
+    dg.perform(Selector(""), on: Thread(), with: {
       self.ref.child("hello").observeSingleEvent(of: .value, with: { (snapshot) in
         self.syncMessage = snapshot.value as! String
         self.dataRecieved = true
@@ -37,9 +37,20 @@ class ViewModel: ObservableObject {
         print(error.localizedDescription)
         self.dataRecieved = true
       }
-    }
-    while (!dataRecieved) {
-    }
+    }, waitUntilDone: false)
+//    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+//      // https://stackoverflow.com/questions/38031137/how-to-program-a-delay-in-swift-3
+//      self.ref.child("hello").observeSingleEvent(of: .value, with: { (snapshot) in
+//        self.syncMessage = snapshot.value as! String
+//        self.dataRecieved = true
+//      }) { (error) in
+//        print(error.localizedDescription)
+//        self.dataRecieved = true
+//      }
+//    }
+//    while (!dataRecieved) {
+//    }
+    dg.wait()
     return syncMessage
   }
 }
