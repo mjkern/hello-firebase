@@ -8,10 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
-    }
+  @ObservedObject var viewModel = ViewModel()
+  var body: some View {
+    Text("Message: " + viewModel.message)
+      .padding()
+      .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
+        self.viewModel.fetchData()
+      })
+  }
 }
 
 struct ContentView_Previews: PreviewProvider {
