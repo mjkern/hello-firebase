@@ -10,11 +10,14 @@ import SwiftUI
 struct ContentView: View {
   @ObservedObject var viewModel = ViewModel()
   var body: some View {
-    Text("Message: " + viewModel.message)
-      .padding()
-      .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
-        self.viewModel.fetchData()
-      })
+    VStack {
+      Text("Asynchronous Message: " + viewModel.message)
+        .padding()
+        .onTapGesture(count: /*@START_MENU_TOKEN@*/1/*@END_MENU_TOKEN@*/, perform: {
+          self.viewModel.fetchData()
+        })
+      Text("Synchronous Message: " + viewModel.blockingFetchData())
+    }
   }
 }
 
