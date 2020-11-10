@@ -12,7 +12,7 @@ import FirebaseDatabase
 class ViewModel: ObservableObject {
   @Published var message = "hard coded message"
   
-  var dataRecieved = false
+  let dg = DispatchGroup()
   var syncMessage = "placeholder text"
   
   var ref = Database.database().reference()
@@ -28,28 +28,16 @@ class ViewModel: ObservableObject {
   }
   
   func blockingFetchData() -> String {
-    let dg = DispatchGroup()
-    dg.perform(Selector(""), on: Thread(), with: {
+    dg.enter()
+    DispatchQueue.global().async {
       self.ref.child("hello").observeSingleEvent(of: .value, with: { (snapshot) in
         self.syncMessage = snapshot.value as! String
-        self.dataRecieved = true
+        
       }) { (error) in
         print(error.localizedDescription)
-        self.dataRecieved = true
       }
-    }, waitUntilDone: false)
-//    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//      // https://stackoverflow.com/questions/38031137/how-to-program-a-delay-in-swift-3
-//      self.ref.child("hello").observeSingleEvent(of: .value, with: { (snapshot) in
-//        self.syncMessage = snapshot.value as! String
-//        self.dataRecieved = true
-//      }) { (error) in
-//        print(error.localizedDescription)
-//        self.dataRecieved = true
-//      }
-//    }
-//    while (!dataRecieved) {
-//    }
+      self.dg.leave()
+    }
     dg.wait()
     return syncMessage
   }
